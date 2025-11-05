@@ -64,7 +64,8 @@ export function LoginForm() {
   }, [error]);
 
   const onSubmit = async (data: LoginFormData) => {
-    clearError();
+    router.push("/dashboard");
+    /*     clearError();
 
     const result = await login({
       email: data.email,
@@ -74,9 +75,7 @@ export function LoginForm() {
     if (result.success) {
       toast.success("Inicio de sesión exitoso");
       router.push("/dashboard");
-    } else {
-      toast.error(result.error || "Error de autenticación");
-    }
+    } */
   };
 
   return (
@@ -119,7 +118,7 @@ export function LoginForm() {
 
           <Button
             type="submit"
-            className="w-full cursor-pointer"
+            className="w-full"
             disabled={isLoading || !isValid}
           >
             {isLoading ? (
