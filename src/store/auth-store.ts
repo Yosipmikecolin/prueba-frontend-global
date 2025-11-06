@@ -5,7 +5,8 @@ import { persist } from "zustand/middleware";
 interface User {
   id: string;
   email: string;
-  name: string;
+  fullName: string;
+  rol: string;
 }
 
 interface LoginCredentials {
@@ -28,19 +29,19 @@ interface AuthState {
 const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
-      // Estado
+      //? Estado
       user: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
 
-      // Función de login
+      //? Función de login
       login: async (credentials) => {
         set({ isLoading: true, error: null });
 
         try {
           const response = await axiosConfig.post<User>(
-            "/api/auth/login",
+            "/auth/login",
             credentials
           );
 
@@ -54,8 +55,9 @@ const useAuthStore = create<AuthState>()(
           });
 
           return { success: true };
-        } catch (error) {
-          const errorMessage = "Error al iniciar sesión";
+        } catch (error: any) {
+          const errorMessage =
+            error?.response?.data?.message || "Error al iniciar sesión";
 
           set({
             error: errorMessage,
@@ -67,16 +69,31 @@ const useAuthStore = create<AuthState>()(
         }
       },
 
-      // Función de logout
-      logout: () => {
-        set({
-          user: null,
-          isAuthenticated: false,
-          error: null,
-        });
+      //? Función de logout
+      logout: async () => {
+        set({ isLoading: true, error: null });
+
+        try {
+          await axiosConfig.post<User>("/auth/logout");
+          set({
+            user: null,
+            isAuthenticated: false,
+            error: null,
+          });
+          window.location.href = "/";
+        } catch (error: any) {
+          const errorMessage =
+            error?.response?.data?.message || "Error al cerrar sesión";
+          set({
+            error: errorMessage,
+            isLoading: false,
+            isAuthenticated: false,
+          });
+          return { success: false, error: errorMessage };
+        }
       },
 
-      // Limpiar errores
+      //? Limpiar errores
       clearError: () => set({ error: null }),
     }),
     {
