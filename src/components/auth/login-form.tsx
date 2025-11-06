@@ -64,8 +64,7 @@ export function LoginForm() {
   }, [error]);
 
   const onSubmit = async (data: LoginFormData) => {
-    router.push("/dashboard");
-    /*     clearError();
+    clearError();
 
     const result = await login({
       email: data.email,
@@ -75,7 +74,7 @@ export function LoginForm() {
     if (result.success) {
       toast.success("Inicio de sesión exitoso");
       router.push("/dashboard");
-    } */
+    }
   };
 
   return (
