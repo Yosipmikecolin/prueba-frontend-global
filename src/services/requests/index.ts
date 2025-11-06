@@ -1,5 +1,9 @@
 import { axiosConfig } from "../axios-config";
 
-export const getPrograms = async () => {
-  return (await axiosConfig.get<ProgramResponse>("/program")).data;
+export const getPrograms = async (page: number, limit: number) => {
+  return (
+    await axiosConfig.get<ProgramResponse>("/program", {
+      params: { page, limit },
+    })
+  ).data;
 };

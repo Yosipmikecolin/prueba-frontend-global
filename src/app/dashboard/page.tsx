@@ -13,10 +13,11 @@ export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("Inscritos");
   const [currentPage, setCurrentPage] = useState(1);
-  const { data, isLoading } = useGetPrograms();
+  const { data, isLoading } = useGetPrograms(currentPage, ITEMS_PER_PAGE);
   const programs = data?.data ?? [];
+  const { lastPage } = data?.meta ?? { lastPage: 1 };
 
-  // ? 1) Filtro limpio y robusto
+  // ? Filtrado
   const filteredPrograms = programs.filter((program) => {
     const matchesSearch =
       program.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -28,16 +29,8 @@ export default function DashboardPage() {
     return matchesSearch && matchesStatus;
   });
 
-  // ? 2) Paginación segura
-  const totalPages = Math.max(
-    1,
-    Math.ceil(filteredPrograms.length / ITEMS_PER_PAGE)
-  );
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentPrograms = filteredPrograms.slice(
-    startIndex,
-    startIndex + ITEMS_PER_PAGE
-  );
+  const currentPrograms = filteredPrograms;
+  const totalPages = lastPage;
 
   // ? 3) Reseteo de página al cambiar filtros
   const handleSearchChange = (value: string) => {
@@ -49,7 +42,6 @@ export default function DashboardPage() {
     setStatusFilter(value);
     setCurrentPage(1);
   };
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -69,13 +61,11 @@ export default function DashboardPage() {
 
           <ProgramGrid programs={currentPrograms} />
 
-          {filteredPrograms.length > 0 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
-          )}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </main>
       )}
     </div>

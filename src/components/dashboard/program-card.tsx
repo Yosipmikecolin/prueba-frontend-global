@@ -13,7 +13,7 @@ interface CourseCardProps {
 }
 
 export function ProgramCard({ program }: CourseCardProps) {
-  const isActive = program.status === "Activo";
+  const isActive = program.status === "active";
 
   return (
     <Card className="flex flex-col transition-shadow hover:shadow-lg">
@@ -28,7 +28,7 @@ export function ProgramCard({ program }: CourseCardProps) {
               isActive ? "bg-green-800" : "bg-muted text-muted-foreground"
             }
           >
-            {program.status}
+            {isActive ? "Activo" : "Próximamente"}
           </Badge>
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">
