@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎯 Frontend — Prueba Técnica
 
-## Getting Started
+Este repositorio corresponde a la implementación **Frontend** desarrollada en **Next.js**, enfocada en una arquitectura modular, escalable y orientada a la mantenibilidad.  
+La solución prioriza buenas prácticas de seguridad, experiencia de usuario fluida y eficiencia en la gestión de estado y datos.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🧱 Stack Tecnológico
+
+| Tecnología | Descripción |
+|----------|-------------|
+| **Next.js (última versión)** | Framework base para la aplicación y ruteo |
+| **Zustand** | Gestión de estado global (auth, loading, errores) |
+| **Axios** | Comunicación con el backend |
+| **React Query** | Cacheo y sincronización eficiente de peticiones |
+| **ShadCN UI** | Sistema de componentes reutilizable |
+| **TailwindCSS** | Estilos responsivos y consistentes |
+| **JWT + Cookies HTTPOnly** | Autenticación segura |
+| **Next Middleware** | Protección de rutas desde el servidor |
+
+---
+
+## 🔐 Autenticación y Seguridad
+
+La autenticación utiliza **JWT almacenado en una cookie HTTPOnly**, evitando el acceso directos desde el cliente y reduciendo el riesgo de ataques XSS.
+
+- El token **no se expone en localStorage**.
+- La cookie caduca según la misma expiración interna del token.
+- Las **rutas privadas** se verifican desde **Middleware de Next**, garantizando acceso rápido y seguro sin re-renderizados innecesarios.
+
+---
+
+## 🧠 Gestión de Estado con Zustand
+
+El estado global gestiona sesión, errores y carga de datos del usuario:
+
+
+```
+{
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+  login: () => void;
+  logout: () => void;
+  clearError: () => void;
+  fetchUser: () => void;
+}
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+##  📄 Instrucciones de Ejecución
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Asegúrese de ejecutar el backend del proyecto siguiendo las instrucciones detalladas en su archivo README.
+- Asegúrese de tener el gestor de paquetes ```pnpm``` instalado. Puede verificarlo ejecutando ```pnpm -v``` en su terminal. Si no lo tiene, instálelo globalmente usando npm (asumiendo que tiene Node.js): ```npm install -g pnpm```
+- Inicie el entorno de desarrollo del frontend con el comando: ```pnpm run dev```
+- Abra el navegador en la siguiente ruta para acceder a la aplicación: ```http://localhost:3000/```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 😓 Disculpas
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Pido disculpas por no haber podido completar todos los requisitos de la prueba debido a una limitación de tiempo, ya que se me presentó otra evaluación para el mismo día.
 
-## Deploy on Vercel
+- La vista que quedó pendiente de finalizar fue la sección de programas o cursos del administrador. A pesar de no haberla terminado, implementé la vista interactiva con datos ficticios para simular la funcionalidad requerida.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- De haber contado con más tiempo, habría seguido la misma arquitectura y lógica que desarrollé para la vista del administrador, aplicándola a la sección de estudiantes.
