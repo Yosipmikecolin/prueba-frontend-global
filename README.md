@@ -57,6 +57,14 @@ El estado global gestiona sesión, errores y carga de datos del usuario:
 
 ---
 
+##  📄 Video de prueba
+
+Por el afán, no grabé audio y el video está sin audio. Me disculpo, pero se puede ver la funcionalidad de la prueba técnica.:
+
+[https://drive.google.com/file/d/1g4oRoHzzUMaNOSSqFARrbKyGlRYMqurL/view?usp=sharing](https://drive.google.com/file/d/1g4oRoHzzUMaNOSSqFARrbKyGlRYMqurL/view?usp=sharing)
+
+---
+
 
 
 ## 😓 Disculpas
