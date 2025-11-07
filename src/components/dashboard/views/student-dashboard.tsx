@@ -20,7 +20,7 @@ export default function StudentDashboard() {
   const { lastPage } = data?.meta ?? { lastPage: 1 };
   const { user } = useAuthStore();
 
-  // ? Filtrado
+  // ? ✅ Filtrado
   const filteredPrograms = programs.filter((program) => {
     const matchesSearch =
       program.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -37,7 +37,7 @@ export default function StudentDashboard() {
   const currentPrograms = filteredPrograms;
   const totalPages = lastPage;
 
-  // ? 3) Reseteo de página al cambiar filtros
+  // ? ✅ Reseteo de página al cambiar filtros
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
     setCurrentPage(1);

@@ -73,7 +73,7 @@ export function ViewStudentDialog({
             <p className="text-sm font-medium text-muted-foreground mb-2">
               Programas Inscritos ({student.programs.length})
             </p>
-            <ScrollArea className="h-max-[200px] p-3">
+            <ScrollArea className="h-[150px] p-3">
               <div className="space-y-2">
                 {student.programs.length === 0 ? (
                   <p className="text-sm text-muted-foreground">
