@@ -11,7 +11,7 @@ export function Header({ text }: HeaderProps) {
 
   return (
     <header className="border-b border-border bg-card">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8 flex-wrap gap-5">
+      <div className="mx-auto flex max-w-7xl px-4 py-4 sm:px-6 lg:px-8 flex-col items-center gap-5 justify-center text-center sm:flex-row sm:justify-between sm:text-left">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600">
             <GraduationCap className="h-6 w-6 text-primary-foreground" />
@@ -23,12 +23,13 @@ export function Header({ text }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="text-right">
+          <div className="sm:text-right text-center">
             <p className="text-sm font-medium text-foreground">
               {user?.fullName}
             </p>
             <p className="text-xs text-muted-foreground">{user?.email}</p>
           </div>
+
           <Button
             variant="outline"
             size="sm"

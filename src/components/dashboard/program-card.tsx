@@ -15,7 +15,6 @@ interface CourseCardProps {
 }
 
 export function ProgramCard({ program }: CourseCardProps) {
-  const isActive = program.status === "active";
   const { mutateAsync, isPending } = useAddProgramToStudent();
   const { user, fetchUser } = useAuthStore();
 
@@ -24,20 +23,30 @@ export function ProgramCard({ program }: CourseCardProps) {
     fetchUser();
   };
 
+  const getStatusProps = (status: Program["status"]) => {
+    switch (status) {
+      case "easy":
+        return { label: "Fácil", bgColor: "bg-green-100 text-green-600" };
+      case "mid":
+        return { label: "Medio", bgColor: "bg-amber-100 text-amber-600" };
+      case "high":
+        return { label: "Difícil", bgColor: "bg-red-100 text-red-600" };
+      default:
+        return { label: "Pendiente", bgColor: "bg-gray-500" };
+    }
+  };
+
   return (
     <Card className="flex flex-col transition-shadow hover:shadow-lg">
       <CardHeader className="space-y-3">
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex items-start justify-between gap-2 flex-wrap">
           <h3 className="text-lg font-semibold leading-tight text-card-foreground">
             {program.name}
           </h3>
           <Badge
-            variant={isActive ? "default" : "secondary"}
-            className={
-              isActive ? "bg-green-800" : "bg-muted text-muted-foreground"
-            }
+            className={`text-white ${getStatusProps(program.status).bgColor}`}
           >
-            {isActive ? "Activo" : "Próximamente"}
+            {getStatusProps(program.status).label}
           </Badge>
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">
