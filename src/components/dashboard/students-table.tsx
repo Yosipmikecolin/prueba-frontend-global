@@ -16,13 +16,17 @@ import { Eye, Pencil, Trash2, Plus, Search } from "lucide-react";
 import { EditStudentDialog } from "./edit-student-dialog";
 import { ViewStudentDialog } from "./view-student-dialog";
 import { DeleteConfirmDialog } from "./delete-confirm-dialog";
-import { useGetUsers } from "@/services/queries";
+import { useGetPrograms, useGetUsers } from "@/services/queries";
 import { Pagination } from "./pagination";
+import { useUpdatedStudent } from "@/services/mutation";
 
 export function StudentsTable() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [editingStudent, setEditingStudent] = useState(null);
+  const [editingStudent, setEditingStudent] = useState<User | null>(null);
   const [viewingStudent, setViewingStudent] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const { data: programs } = useGetPrograms(1, 10);
+  const { mutateAsync } = useUpdatedStudent();
   const [deletingStudentId, setDeletingStudentId] = useState<string | null>(
     null
   );
@@ -49,8 +53,19 @@ export function StudentsTable() {
   const handleView = (student: any) => setViewingStudent(student);
   const handleEdit = (student: any) => setEditingStudent(student);
   const handleDelete = (id: string) => {
-    // Aquí luego metemos la mutación react-query
     console.log("Eliminar:", id);
+  };
+
+  const onSaveStudent = async (student: User) => {
+    if (editingStudent) {
+      const { fullName, email, programs } = student;
+      const user = {
+        userId: student.id,
+        data: { fullName, email, programIds: programs.map((i) => i.id) },
+      };
+      await mutateAsync(user);
+      setEditingStudent(null);
+    }
   };
 
   return (
@@ -66,7 +81,7 @@ export function StudentsTable() {
           />
         </div>
 
-        <Button>
+        <Button onClick={() => setOpenModal(true)}>
           <Plus className="mr-2 h-4 w-4" />
           Agregar Estudiante
         </Button>
@@ -152,9 +167,10 @@ export function StudentsTable() {
       />
 
       <EditStudentDialog
+        programs={programs?.data || []}
         student={editingStudent}
         onClose={() => setEditingStudent(null)}
-        onSave={() => {}}
+        onSave={onSaveStudent}
       />
       <ViewStudentDialog
         student={viewingStudent}

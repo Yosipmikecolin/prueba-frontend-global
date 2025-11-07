@@ -11,7 +11,7 @@ export const useGetPrograms = (page: number, limit: number) => {
 
 export const useGetUsers = (page: number, limit: number) => {
   return useQuery({
-    queryKey: ["users", page, limit],
+    queryKey: ["students", page, limit],
     queryFn: () => getUsers(page, limit),
     placeholderData: (previousData) => previousData,
   });

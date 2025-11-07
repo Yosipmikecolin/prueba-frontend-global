@@ -7,7 +7,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useAddProgramToUser } from "@/services/mutation";
+import { useAddProgramToStudent } from "@/services/mutation";
 import useAuthStore from "@/store/auth-store";
 
 interface CourseCardProps {
@@ -16,7 +16,7 @@ interface CourseCardProps {
 
 export function ProgramCard({ program }: CourseCardProps) {
   const isActive = program.status === "active";
-  const { mutateAsync, isPending } = useAddProgramToUser();
+  const { mutateAsync, isPending } = useAddProgramToStudent();
   const { user, fetchUser } = useAuthStore();
 
   const addProgram = async (programId: string) => {

@@ -20,10 +20,7 @@ import toast from "react-hot-toast";
 import useAuthStore from "@/store/auth-store";
 
 const loginSchema = z.object({
-  email: z
-    .string()
-    .min(1, "El correo es obligatorio")
-    .email("Correo electrónico inválido"),
+  email: z.string().min(1, "El correo es obligatorio"),
   password: z
     .string()
     .min(6, "La contraseña debe tener al menos 6 caracteres")

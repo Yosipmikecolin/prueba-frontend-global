@@ -19,3 +19,10 @@ export const getUsers = async (page: number, limit: number) => {
 export const addProgramToUser = async (userId: string, programId: string) => {
   return (await axiosConfig.post(`/user/${userId}/programs/${programId}`)).data;
 };
+
+export const updatedUser = async (
+  userId: string,
+  payload: { fullName: string; email: string; programIds: string[] }
+) => {
+  return (await axiosConfig.put(`/user/${userId}`, payload)).data;
+};
