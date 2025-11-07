@@ -1,6 +1,27 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addProgramToUser, deleteUser, updatedUser } from "../requests";
+import {
+  addProgramToUser,
+  createProgramToUser,
+  deleteUser,
+  updatedUser,
+} from "../requests";
 import toast from "react-hot-toast";
+
+export const useCreateStudent = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["student", "create"],
+    mutationFn: (payload: {
+      fullName: string;
+      email: string;
+      programIds: string[];
+    }) => createProgramToUser(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["students"] });
+      toast.success("Estudiante creado ✅");
+    },
+  });
+};
 
 export const useAddProgramToStudent = () => {
   return useMutation({
@@ -30,11 +51,6 @@ export const useUpdatedStudent = () => {
       toast.success("Estudiante actualizado ✅");
       queryClient.invalidateQueries({ queryKey: ["students"] });
     },
-
-    onError: (error: any) => {
-      const message = error?.response?.data?.message;
-      toast.error(message);
-    },
   });
 };
 
@@ -46,11 +62,6 @@ export const useDeleteStudent = () => {
     onSuccess: () => {
       toast.success("Estudiante eliminado ✅");
       queryClient.invalidateQueries({ queryKey: ["students"] });
-    },
-
-    onError: (error: any) => {
-      const message = error?.response?.data?.message;
-      toast.error(message);
     },
   });
 };

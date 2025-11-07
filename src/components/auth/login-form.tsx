@@ -23,7 +23,7 @@ const loginSchema = z.object({
   email: z.string().min(1, "El correo es obligatorio"),
   password: z
     .string()
-    .min(6, "La contraseña debe tener al menos 6 caracteres")
+    .min(8, "La contraseña debe tener al menos 8 caracteres")
     .max(100, "La contraseña es demasiado larga"),
 });
 

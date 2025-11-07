@@ -18,7 +18,13 @@ import { ViewStudentDialog } from "./view-student-dialog";
 import { DeleteConfirmDialog } from "./delete-confirm-dialog";
 import { useGetPrograms, useGetUsers } from "@/services/queries";
 import { Pagination } from "./pagination";
-import { useDeleteStudent, useUpdatedStudent } from "@/services/mutation";
+import {
+  useCreateStudent,
+  useDeleteStudent,
+  useUpdatedStudent,
+} from "@/services/mutation";
+import { CreatetStudentDialog } from "./create-student-dialog";
+import toast from "react-hot-toast";
 
 export function StudentsTable() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,6 +34,7 @@ export function StudentsTable() {
   const { data: programs } = useGetPrograms(1, 10);
   const { mutateAsync } = useUpdatedStudent();
   const { mutateAsync: mutateAsyncDelete } = useDeleteStudent();
+  const { mutateAsync: mutateAsyncCreate } = useCreateStudent();
   const [deletingStudentId, setDeletingStudentId] = useState<string | null>(
     null
   );
@@ -53,19 +60,47 @@ export function StudentsTable() {
 
   const handleView = (student: any) => setViewingStudent(student);
   const handleEdit = (student: any) => setEditingStudent(student);
+
+  //? Eliminar estudiante
   const handleDelete = async (id: string) => {
-    await mutateAsyncDelete(id);
+    try {
+      await mutateAsyncDelete(id);
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      toast.error(message);
+    }
   };
 
-  const onSaveStudent = async (student: User) => {
-    if (editingStudent) {
-      const { fullName, email, programs } = student;
-      const user = {
-        userId: student.id,
-        data: { fullName, email, programIds: programs.map((i) => i.id) },
-      };
-      await mutateAsync(user);
-      setEditingStudent(null);
+  //? Actualizar estudiante
+  const onUpdatedStudent = async () => {
+    try {
+      if (editingStudent) {
+        const { fullName, email, programs } = editingStudent;
+        const user = {
+          userId: editingStudent.id,
+          data: { fullName, email, programIds: programs.map((i) => i.id) },
+        };
+        await mutateAsync(user);
+        setEditingStudent(null);
+      }
+    } catch (error: any) {
+      const message = error?.response?.data?.message;
+      toast.error(message);
+    }
+  };
+
+  //? Crear estudiante
+  const onSaveStudent = async (student: {
+    fullName: string;
+    email: string;
+    programIds: string[];
+  }) => {
+    try {
+      await mutateAsyncCreate(student);
+      setOpenModal(false);
+    } catch (error: any) {
+      const message = error?.response?.data?.errors[0];
+      toast.error(message);
     }
   };
 
@@ -167,11 +202,18 @@ export function StudentsTable() {
         onPageChange={setCurrentPage}
       />
 
+      <CreatetStudentDialog
+        openModal={openModal}
+        programs={programs?.data || []}
+        onClose={() => setOpenModal(false)}
+        onSave={onSaveStudent}
+      />
+
       <EditStudentDialog
         programs={programs?.data || []}
         student={editingStudent}
         onClose={() => setEditingStudent(null)}
-        onSave={onSaveStudent}
+        onSave={onUpdatedStudent}
       />
       <ViewStudentDialog
         student={viewingStudent}

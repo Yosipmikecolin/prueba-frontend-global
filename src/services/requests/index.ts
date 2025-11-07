@@ -16,6 +16,14 @@ export const getUsers = async (page: number, limit: number) => {
   ).data;
 };
 
+export const createProgramToUser = async (payload: {
+  fullName: string;
+  email: string;
+  programIds: string[];
+}) => {
+  return (await axiosConfig.post("/user", payload)).data;
+};
+
 export const addProgramToUser = async (userId: string, programId: string) => {
   return (await axiosConfig.post(`/user/${userId}/programs/${programId}`)).data;
 };

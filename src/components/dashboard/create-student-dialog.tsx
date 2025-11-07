@@ -17,27 +17,31 @@ import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-type EditStudentDialogProps = {
-  student: User | null;
+type CreateStudentDialogProps = {
   programs: Program[];
+  openModal: boolean;
   onClose: () => void;
-  onSave: () => void;
+  onSave: (student: FormValues) => void;
 };
 
 const formSchema = z.object({
   fullName: z.string().min(1, "El nombre es obligatorio"),
   email: z.string(),
-  programs: z.array(z.string()).min(1, "Selecciona al menos un programa"),
+  password: z
+    .string()
+    .min(8, "La contraseña debe tener al menos 8 caracteres")
+    .max(100, "La contraseña es demasiado larga"),
+  programIds: z.array(z.string()).min(1, "Selecciona al menos un programa"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-export function EditStudentDialog({
-  student,
+export function CreatetStudentDialog({
   programs = [],
+  openModal,
   onClose,
   onSave,
-}: EditStudentDialogProps) {
+}: CreateStudentDialogProps) {
   const {
     register,
     control,
@@ -49,32 +53,26 @@ export function EditStudentDialog({
     defaultValues: {
       fullName: "",
       email: "",
-      programs: [],
+      programIds: [],
     },
   });
 
-  useEffect(() => {
-    if (student) {
-      reset({
-        fullName: student.fullName,
-        email: student.email,
-        programs: student.programs?.map((p) => p.id) ?? [],
-      });
-    }
-  }, [student, reset]);
-
-  const onSubmit = () => {
-    onSave();
+  const onSubmit = (data: FormValues) => {
+    onSave(data);
   };
 
   return (
-    <Dialog open={!!student} onOpenChange={onClose}>
+    <Dialog
+      open={openModal}
+      onOpenChange={() => {
+        onClose();
+        reset();
+      }}
+    >
       <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
-          <DialogTitle className="text-blue-600">Editar Estudiante</DialogTitle>
-          <DialogDescription>
-            Actualiza la información del estudiante
-          </DialogDescription>
+          <DialogTitle className="text-blue-600">Crear Estudiante</DialogTitle>
+          <DialogDescription>Crea un nuevo estudiante</DialogDescription>
         </DialogHeader>
 
         <form
@@ -100,12 +98,26 @@ export function EditStudentDialog({
             )}
           </div>
 
+          <div className="space-y-2">
+            <Label htmlFor="password">Contraseña</Label>
+            <Input
+              id="password"
+              type="password"
+              placeholder="••••••••"
+              className={errors.password ? "border-red-500" : ""}
+              {...register("password")}
+            />
+            {errors.password && (
+              <p className="text-sm text-red-500">{errors.password.message}</p>
+            )}
+          </div>
+
           <div className="grid gap-2">
             <Label>Programas Asociados</Label>
 
             <Controller
               control={control}
-              name="programs"
+              name="programIds"
               render={({ field }) => (
                 <div className="flex flex-col gap-2 max-h-40 overflow-y-auto border p-3 rounded-md">
                   {programs.map((program) => (
@@ -131,8 +143,10 @@ export function EditStudentDialog({
               )}
             />
 
-            {errors.programs && (
-              <p className="text-red-500 text-sm">{errors.programs.message}</p>
+            {errors.programIds && (
+              <p className="text-red-500 text-sm">
+                {errors.programIds.message}
+              </p>
             )}
           </div>
 
