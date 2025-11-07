@@ -2,7 +2,11 @@ import { GraduationCap, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import useAuthStore from "@/store/auth-store";
 
-export function Header() {
+interface HeaderProps {
+  text: string;
+}
+
+export function Header({ text }: HeaderProps) {
   const { logout, user } = useAuthStore();
 
   return (
@@ -14,15 +18,15 @@ export function Header() {
           </div>
           <div>
             <h1 className="text-xl font-bold text-foreground">CodeAcadamy</h1>
-            <p className="text-sm text-muted-foreground">
-              Dashboard Estudiante
-            </p>
+            <p className="text-sm text-muted-foreground">{text}</p>
           </div>
         </div>
 
         <div className="flex items-center gap-4">
           <div className="text-right">
-            <p className="text-sm font-medium text-foreground">{user?.fullName}</p>
+            <p className="text-sm font-medium text-foreground">
+              {user?.fullName}
+            </p>
             <p className="text-xs text-muted-foreground">{user?.email}</p>
           </div>
           <Button

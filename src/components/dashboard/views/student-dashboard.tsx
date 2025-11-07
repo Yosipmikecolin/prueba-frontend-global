@@ -49,7 +49,7 @@ export default function StudentDashboard() {
   };
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header text="Dashboard Estudiante" />
 
       {isLoading ? (
         <div className="p-6 text-center h-[700px] flex justify-center items-center">

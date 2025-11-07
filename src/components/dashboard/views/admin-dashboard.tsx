@@ -7,7 +7,7 @@ import { ProgramsTable } from "../programs-table";
 export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header text="Dashboard Administrador" />
 
       <main className="container mx-auto px-4 py-8">
         <Tabs defaultValue="students" className="w-full">
