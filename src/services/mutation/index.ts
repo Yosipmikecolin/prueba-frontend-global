@@ -10,5 +10,10 @@ export const useAddProgramToUser = () => {
     onSuccess: () => {
       toast.success("Programa asignado ✅");
     },
+
+    onError: (error: any) => {
+      const message = error?.response?.data?.message;
+      toast.error(message);
+    },
   });
 };

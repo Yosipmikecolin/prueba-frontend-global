@@ -1,4 +1,4 @@
-import { Calendar, Users } from "lucide-react";
+import { Calendar, Loader2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,7 +16,7 @@ interface CourseCardProps {
 
 export function ProgramCard({ program }: CourseCardProps) {
   const isActive = program.status === "active";
-  const { mutateAsync } = useAddProgramToUser();
+  const { mutateAsync, isPending } = useAddProgramToUser();
   const { user, fetchUser } = useAuthStore();
 
   const addProgram = async (programId: string) => {
@@ -53,8 +53,18 @@ export function ProgramCard({ program }: CourseCardProps) {
       </CardContent>
 
       <CardFooter className="flex gap-2">
-        <Button className="flex-1" onClick={() => addProgram(program.id)}>
-          Registrarse
+        <Button
+          disabled={user?.programs.some((i) => i.id === program.id)}
+          className="flex-1"
+          onClick={() => addProgram(program.id)}
+        >
+          {isPending ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : user?.programs.some((i) => i.id === program.id) ? (
+            "Inscrito"
+          ) : (
+            "Inscribir"
+          )}
         </Button>
         <Button variant="outline" size="icon">
           <Users className="h-4 w-4" />
