@@ -6,16 +6,18 @@ import { SearchBar } from "../../components/dashboard/search-bar";
 import { ProgramGrid } from "../../components/dashboard/program-grid";
 import { Pagination } from "../../components/dashboard/pagination";
 import { useGetPrograms } from "@/services/queries";
+import useAuthStore from "@/store/auth-store";
 
 const ITEMS_PER_PAGE = 10;
 
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("Inscritos");
+  const [statusFilter, setStatusFilter] = useState("Sin inscribir");
   const [currentPage, setCurrentPage] = useState(1);
   const { data, isLoading } = useGetPrograms(currentPage, ITEMS_PER_PAGE);
   const programs = data?.data ?? [];
   const { lastPage } = data?.meta ?? { lastPage: 1 };
+  const { user } = useAuthStore();
 
   // ? Filtrado
   const filteredPrograms = programs.filter((program) => {
@@ -23,10 +25,12 @@ export default function DashboardPage() {
       program.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       program.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesStatus =
-      statusFilter === "Inscritos" || program.status === statusFilter;
+    const programBelongsToUser =
+      statusFilter === "Inscritos"
+        ? user?.programs?.some((p) => p.id === program.id) // ? Inscritos
+        : !user?.programs?.some((p) => p.id === program.id); // ?  NO inscritos
 
-    return matchesSearch && matchesStatus;
+    return matchesSearch && programBelongsToUser;
   });
 
   const currentPrograms = filteredPrograms;

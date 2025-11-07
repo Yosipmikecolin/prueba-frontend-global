@@ -40,8 +40,8 @@ export function SearchBar({
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="Inscritos">Inscritos</SelectItem>
           <SelectItem value="Sin inscribir">Sin inscribir</SelectItem>
+          <SelectItem value="Inscritos">Inscritos</SelectItem>
         </SelectContent>
       </Select>
     </div>

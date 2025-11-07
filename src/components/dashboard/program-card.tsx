@@ -7,6 +7,8 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useAddProgramToUser } from "@/services/mutation";
+import useAuthStore from "@/store/auth-store";
 
 interface CourseCardProps {
   program: Program;
@@ -14,6 +16,13 @@ interface CourseCardProps {
 
 export function ProgramCard({ program }: CourseCardProps) {
   const isActive = program.status === "active";
+  const { mutateAsync } = useAddProgramToUser();
+  const { user, fetchUser } = useAuthStore();
+
+  const addProgram = async (programId: string) => {
+    await mutateAsync({ userId: user?.id!, programId });
+    fetchUser();
+  };
 
   return (
     <Card className="flex flex-col transition-shadow hover:shadow-lg">
@@ -44,7 +53,9 @@ export function ProgramCard({ program }: CourseCardProps) {
       </CardContent>
 
       <CardFooter className="flex gap-2">
-        <Button className="flex-1">Registrarse</Button>
+        <Button className="flex-1" onClick={() => addProgram(program.id)}>
+          Registrarse
+        </Button>
         <Button variant="outline" size="icon">
           <Users className="h-4 w-4" />
         </Button>

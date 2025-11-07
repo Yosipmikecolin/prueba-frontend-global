@@ -7,6 +7,7 @@ interface User {
   email: string;
   fullName: string;
   rol: string;
+  programs: { id: string; name: string }[];
 }
 
 interface LoginCredentials {
@@ -24,6 +25,7 @@ interface AuthState {
   ) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   clearError: () => void;
+  fetchUser: () => void;
 }
 
 const useAuthStore = create<AuthState>()(
@@ -90,6 +92,25 @@ const useAuthStore = create<AuthState>()(
             isAuthenticated: false,
           });
           return { success: false, error: errorMessage };
+        }
+      },
+
+      fetchUser: async () => {
+        set({ isLoading: true });
+        try {
+          const { data } = await axiosConfig.get<User>("/auth/me");
+
+          set({
+            user: data,
+            isAuthenticated: true,
+            isLoading: false,
+          });
+        } catch {
+          set({
+            user: null,
+            isAuthenticated: false,
+            isLoading: false,
+          });
         }
       },
 
