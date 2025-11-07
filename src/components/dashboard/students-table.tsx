@@ -18,7 +18,7 @@ import { ViewStudentDialog } from "./view-student-dialog";
 import { DeleteConfirmDialog } from "./delete-confirm-dialog";
 import { useGetPrograms, useGetUsers } from "@/services/queries";
 import { Pagination } from "./pagination";
-import { useUpdatedStudent } from "@/services/mutation";
+import { useDeleteStudent, useUpdatedStudent } from "@/services/mutation";
 
 export function StudentsTable() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -27,6 +27,7 @@ export function StudentsTable() {
   const [openModal, setOpenModal] = useState(false);
   const { data: programs } = useGetPrograms(1, 10);
   const { mutateAsync } = useUpdatedStudent();
+  const { mutateAsync: mutateAsyncDelete } = useDeleteStudent();
   const [deletingStudentId, setDeletingStudentId] = useState<string | null>(
     null
   );
@@ -52,8 +53,8 @@ export function StudentsTable() {
 
   const handleView = (student: any) => setViewingStudent(student);
   const handleEdit = (student: any) => setEditingStudent(student);
-  const handleDelete = (id: string) => {
-    console.log("Eliminar:", id);
+  const handleDelete = async (id: string) => {
+    await mutateAsyncDelete(id);
   };
 
   const onSaveStudent = async (student: User) => {

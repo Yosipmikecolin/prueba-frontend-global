@@ -26,3 +26,7 @@ export const updatedUser = async (
 ) => {
   return (await axiosConfig.put(`/user/${userId}`, payload)).data;
 };
+
+export const deleteUser = async (userId: string) => {
+  return (await axiosConfig.delete(`/user/${userId}`)).data;
+};

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addProgramToUser, updatedUser } from "../requests";
+import { addProgramToUser, deleteUser, updatedUser } from "../requests";
 import toast from "react-hot-toast";
 
 export const useAddProgramToStudent = () => {
@@ -19,7 +19,7 @@ export const useAddProgramToStudent = () => {
 };
 
 export const useUpdatedStudent = () => {
-   const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["student", "updated"],
     mutationFn: (payload: {
@@ -28,7 +28,24 @@ export const useUpdatedStudent = () => {
     }) => updatedUser(payload.userId, payload.data),
     onSuccess: () => {
       toast.success("Estudiante actualizado ✅");
-        queryClient.invalidateQueries({ queryKey: ["students"] });
+      queryClient.invalidateQueries({ queryKey: ["students"] });
+    },
+
+    onError: (error: any) => {
+      const message = error?.response?.data?.message;
+      toast.error(message);
+    },
+  });
+};
+
+export const useDeleteStudent = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: ["student", "delete"],
+    mutationFn: (userId: string) => deleteUser(userId),
+    onSuccess: () => {
+      toast.success("Estudiante eliminado ✅");
+      queryClient.invalidateQueries({ queryKey: ["students"] });
     },
 
     onError: (error: any) => {
