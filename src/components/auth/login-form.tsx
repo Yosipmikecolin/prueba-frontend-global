@@ -132,11 +132,12 @@ export function LoginForm() {
           <p className="text-sm font-medium mb-2">Credenciales de prueba:</p>
           <div className="text-sm space-y-1 text-muted-foreground">
             <p>
-              <strong>Admin:</strong> yosip@example.com
-            </p>
-            <p>
               <strong>Estudiante:</strong> estudiante@lms.com
             </p>
+            <p>
+              <strong>Admin:</strong> yosip@example.com
+            </p>
+
             <p className="text-xs mt-2">Contraseña:12345678</p>
           </div>
         </div>

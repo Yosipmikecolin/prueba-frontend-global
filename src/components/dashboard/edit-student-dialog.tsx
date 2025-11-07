@@ -21,7 +21,7 @@ type EditStudentDialogProps = {
   student: User | null;
   programs: Program[];
   onClose: () => void;
-  onSave: () => void;
+  onSave: (user:User) => void;
 };
 
 const formSchema = z.object({
@@ -63,8 +63,18 @@ export function EditStudentDialog({
     }
   }, [student, reset]);
 
-  const onSubmit = () => {
-    onSave();
+  const onSubmit = (data: FormValues) => {
+    const updatedPrograms = programs.filter((p) =>
+      data.programs.includes(p.id)
+    );
+
+    const updatedStudent: User = {
+      ...student!,
+      ...data,
+      programs: updatedPrograms,
+    };
+
+    onSave(updatedStudent);
   };
 
   return (

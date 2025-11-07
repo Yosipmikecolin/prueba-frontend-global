@@ -72,10 +72,10 @@ export function StudentsTable() {
   };
 
   //? Actualizar estudiante
-  const onUpdatedStudent = async () => {
+  const onUpdatedStudent = async (student: User) => {
     try {
       if (editingStudent) {
-        const { fullName, email, programs } = editingStudent;
+        const { fullName, email, programs } = student;
         const user = {
           userId: editingStudent.id,
           data: { fullName, email, programIds: programs.map((i) => i.id) },
