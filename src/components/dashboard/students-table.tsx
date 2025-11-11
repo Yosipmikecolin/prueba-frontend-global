@@ -25,6 +25,7 @@ import {
 } from "@/services/mutation";
 import { CreatetStudentDialog } from "./create-student-dialog";
 import toast from "react-hot-toast";
+import { parseAxiosError } from "@/utils";
 
 export function StudentsTable() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -66,8 +67,8 @@ export function StudentsTable() {
     try {
       await mutateAsyncDelete(id);
     } catch (error: any) {
-      const message = error?.response?.data?.message;
-      toast.error(message);
+      const errorMsg = parseAxiosError(error);
+      toast.error(errorMsg);
     }
   };
 
@@ -84,23 +85,19 @@ export function StudentsTable() {
         setEditingStudent(null);
       }
     } catch (error: any) {
-      const message = error?.response?.data?.message;
-      toast.error(message);
+      const errorMsg = parseAxiosError(error);
+      toast.error(errorMsg);
     }
   };
 
   //? Crear estudiante
-  const onSaveStudent = async (student: {
-    fullName: string;
-    email: string;
-    programIds: string[];
-  }) => {
+  const onSaveStudent = async (student: CreateStuden) => {
     try {
       await mutateAsyncCreate(student);
       setOpenModal(false);
     } catch (error: any) {
-      const message = error?.response?.data?.errors[0];
-      toast.error(message);
+      const errorMsg = parseAxiosError(error);
+      toast.error(errorMsg);
     }
   };
 
