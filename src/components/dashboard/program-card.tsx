@@ -9,6 +9,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { useAddProgramToStudent } from "@/services/mutation";
 import useAuthStore from "@/store/auth-store";
+import { getStatusProps } from "@/utils";
 
 interface CourseCardProps {
   program: Program;
@@ -23,19 +24,6 @@ export function ProgramCard({ program }: CourseCardProps) {
     fetchUser();
   };
 
-  const getStatusProps = (status: Program["status"]) => {
-    switch (status) {
-      case "easy":
-        return { label: "Fácil", bgColor: "bg-green-100 text-green-600" };
-      case "mid":
-        return { label: "Medio", bgColor: "bg-amber-100 text-amber-600" };
-      case "high":
-        return { label: "Difícil", bgColor: "bg-red-100 text-red-600" };
-      default:
-        return { label: "Pendiente", bgColor: "bg-gray-500" };
-    }
-  };
-
   return (
     <Card className="flex flex-col transition-shadow hover:shadow-lg">
       <CardHeader className="space-y-3">
@@ -44,9 +32,11 @@ export function ProgramCard({ program }: CourseCardProps) {
             {program.name}
           </h3>
           <Badge
-            className={`text-white ${getStatusProps(program.status).bgColor}`}
+            className={`text-white ${
+              getStatusProps(program.difficulty).bgColor
+            }`}
           >
-            {getStatusProps(program.status).label}
+            {getStatusProps(program.difficulty).label}
           </Badge>
         </div>
         <p className="text-sm text-muted-foreground leading-relaxed">

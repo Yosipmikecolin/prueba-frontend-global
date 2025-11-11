@@ -27,6 +27,7 @@ import { CreatetStudentDialog } from "./create-student-dialog";
 import toast from "react-hot-toast";
 
 export function StudentsTable() {
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [editingStudent, setEditingStudent] = useState<User | null>(null);
   const [viewingStudent, setViewingStudent] = useState(null);
@@ -38,7 +39,6 @@ export function StudentsTable() {
   const [deletingStudentId, setDeletingStudentId] = useState<string | null>(
     null
   );
-  const [currentPage, setCurrentPage] = useState(1);
 
   // ? ✅ Consultar la paginación real desde backend
   const { data, isLoading } = useGetUsers(currentPage, 10);
