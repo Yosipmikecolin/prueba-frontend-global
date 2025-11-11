@@ -92,7 +92,7 @@ export function CreateProgramDialog({
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
           <div className="grid gap-2">
             <Label htmlFor="name">Nombre</Label>
-            <Input id="name" {...register("name")} />
+            <Input id="name" {...register("name")} maxLength={20} />
             {errors.name && (
               <p className="text-red-500 text-sm">{errors.name.message}</p>
             )}
@@ -100,7 +100,12 @@ export function CreateProgramDialog({
 
           <div className="grid gap-2">
             <Label htmlFor="description">Descripción</Label>
-            <Textarea id="description" rows={3} {...register("description")} />
+            <Textarea
+              id="description"
+              rows={3}
+              {...register("description")}
+              maxLength={40}
+            />
             {errors.description && (
               <p className="text-red-500 text-sm">
                 {errors.description.message}

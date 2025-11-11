@@ -86,6 +86,7 @@ export function StudentsTable() {
         setEditingStudent(null);
       }
     } catch (error: any) {
+      alert("s")
       const errorMsg = parseAxiosError(error);
       toast.error(errorMsg);
     }

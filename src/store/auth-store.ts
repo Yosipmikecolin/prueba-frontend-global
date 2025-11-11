@@ -42,12 +42,12 @@ const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
 
         try {
-          const response = await axiosConfig.post<User>(
-            "/auth/login",
-            credentials
-          );
-
-          const user: User = response.data;
+          const { data } = await axiosConfig.post<{
+            user: User;
+            token: string;
+          }>("/auth/login", credentials);
+          localStorage.setItem("access_token", data.token);
+          const user: User = data.user;
 
           set({
             user,

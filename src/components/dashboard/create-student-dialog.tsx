@@ -90,7 +90,7 @@ export function CreatetStudentDialog({
         >
           <div className="grid gap-2">
             <Label htmlFor="fullName">Nombre Completo</Label>
-            <Input id="fullName" {...register("fullName")} />
+            <Input id="fullName" {...register("fullName")} maxLength={20} />
             {errors.fullName && (
               <p className="text-red-500 text-sm">{errors.fullName.message}</p>
             )}
@@ -98,7 +98,12 @@ export function CreatetStudentDialog({
 
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" {...register("email")} />
+            <Input
+              id="email"
+              type="email"
+              {...register("email")}
+              maxLength={20}
+            />
             {errors.email && (
               <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
