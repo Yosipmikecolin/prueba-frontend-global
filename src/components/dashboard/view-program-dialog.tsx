@@ -59,9 +59,7 @@ export function ViewProgramDialog({
               </p>
               <p className="font-medium">
                 {new Date(program.startDate).toLocaleDateString("es-ES", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
+                  timeZone: "UTC",
                 })}
               </p>
             </div>

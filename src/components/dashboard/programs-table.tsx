@@ -16,6 +16,7 @@ import { Eye, Pencil, Trash2, Plus, Search } from "lucide-react";
 import { EditProgramDialog } from "./edit-program-dialog";
 import { DeleteConfirmDialog } from "./delete-confirm-dialog";
 import { ViewProgramDialog } from "./view-program-dialog";
+import { useGetPrograms } from "@/services/queries";
 
 type Program = {
   id: string;
@@ -25,55 +26,19 @@ type Program = {
   status: string;
 };
 
-const initialPrograms: Program[] = [
-  {
-    id: "6bb575bb-9ab3-44c6-8ace-32b155fea9ed",
-    name: "Diseño UX/UI",
-    description: "Crea experiencias digitales excepcionales",
-    startDate: "2025-01-20",
-    status: "active",
-  },
-  {
-    id: "7cc686cc-0bc4-55d7-9bdf-43c266gfb0fe",
-    name: "Desarrollo Web Full Stack",
-    description:
-      "Aprende a crear aplicaciones web modernas con React, Node.js y MongoDB",
-    startDate: "2025-02-01",
-    status: "active",
-  },
-  {
-    id: "8dd797dd-1cd5-66e8-0ceg-54d377hgc1gf",
-    name: "Data Science con Python",
-    description: "Domina el análisis de datos y machine learning con Python",
-    startDate: "2025-03-15",
-    status: "upcoming",
-  },
-  {
-    id: "9ee808ee-2de6-77f9-1dfh-65e488ihd2hg",
-    name: "Marketing Digital",
-    description: "Estrategias de marketing en la era digital",
-    startDate: "2025-04-01",
-    status: "upcoming",
-  },
-  {
-    id: "0ff919ff-3ef7-88g0-2egi-76f599jie3ih",
-    name: "DevOps y Cloud Computing",
-    description: "Infraestructura moderna y despliegue continuo",
-    startDate: "2025-02-15",
-    status: "active",
-  },
-];
-
 export function ProgramsTable() {
-  const [programs, setPrograms] = useState<Program[]>(initialPrograms);
+  const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
+  const { data } = useGetPrograms(currentPage, 10);
   const [editingProgram, setEditingProgram] = useState<Program | null>(null);
   const [viewingProgram, setViewingProgram] = useState<Program | null>(null);
   const [deletingProgramId, setDeletingProgramId] = useState<string | null>(
     null
   );
+  const students = data?.data ?? [];
 
-  const filteredPrograms = programs.filter(
+  // ? ✅ Filtrado por búsqueda en nombre y descripción
+  const filteredPrograms = students.filter(
     (program) =>
       program.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       program.description.toLowerCase().includes(searchTerm.toLowerCase())
@@ -84,14 +49,14 @@ export function ProgramsTable() {
   };
 
   const handleSaveEdit = (updatedProgram: Program) => {
-    setPrograms(
+    /*     setPrograms(
       programs.map((p) => (p.id === updatedProgram.id ? updatedProgram : p))
     );
-    setEditingProgram(null);
+    setEditingProgram(null); */
   };
 
   const handleDelete = (id: string) => {
-    setPrograms(programs.filter((p) => p.id !== id));
+    //setPrograms(programs.filter((p) => p.id !== id));
     setDeletingProgramId(null);
   };
 
@@ -148,7 +113,9 @@ export function ProgramsTable() {
                     {program.description}
                   </TableCell>
                   <TableCell>
-                    {new Date(program.startDate).toLocaleDateString("es-ES")}
+                    {new Date(program.startDate).toLocaleDateString("es-ES", {
+                      timeZone: "UTC",
+                    })}
                   </TableCell>
                   <TableCell>
                     <Badge className="bg-blue-700">{program.status}</Badge>
