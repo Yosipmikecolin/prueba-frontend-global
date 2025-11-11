@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import toast from "react-hot-toast";
 import {
   Table,
   TableBody,
@@ -17,53 +18,80 @@ import { EditProgramDialog } from "./edit-program-dialog";
 import { DeleteConfirmDialog } from "./delete-confirm-dialog";
 import { ViewProgramDialog } from "./view-program-dialog";
 import { useGetPrograms } from "@/services/queries";
-
-type Program = {
-  id: string;
-  name: string;
-  description: string;
-  startDate: string;
-  status: string;
-};
+import { CreateProgramDialog } from "./create-program-dialog";
+import {
+  useCreateProgram,
+  useDeleteProgram,
+  useUpdatedProgram,
+} from "@/services/mutation";
+import { getStatusProps, parseAxiosError } from "@/utils";
+import { Pagination } from "./pagination";
 
 export function ProgramsTable() {
   const [currentPage, setCurrentPage] = useState(1);
-  const [searchTerm, setSearchTerm] = useState("");
-  const { data } = useGetPrograms(currentPage, 10);
+  const [searchQuery, setSearchQuery] = useState("");
   const [editingProgram, setEditingProgram] = useState<Program | null>(null);
   const [viewingProgram, setViewingProgram] = useState<Program | null>(null);
+  const [openModal, setOpenModal] = useState(false);
+  const { data } = useGetPrograms(currentPage, 10);
+  const { mutateAsync: mutateAsyncCreate } = useCreateProgram();
+  const { mutateAsync: mutateAsynUpdated } = useUpdatedProgram();
+  const { mutateAsync: mutateAsyncDelete } = useDeleteProgram();
   const [deletingProgramId, setDeletingProgramId] = useState<string | null>(
     null
   );
   const students = data?.data ?? [];
+  const { lastPage: totalPages } = data?.meta ?? { lastPage: 1 };
 
   // ? ✅ Filtrado por búsqueda en nombre y descripción
   const filteredPrograms = students.filter(
     (program) =>
-      program.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      program.description.toLowerCase().includes(searchTerm.toLowerCase())
+      program.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      program.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleEdit = (program: Program) => {
-    setEditingProgram(program);
+  const handleSearch = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
   };
 
-  const handleSaveEdit = (updatedProgram: Program) => {
-    /*     setPrograms(
-      programs.map((p) => (p.id === updatedProgram.id ? updatedProgram : p))
-    );
-    setEditingProgram(null); */
+  const handleView = (program: Program) => setViewingProgram(program);
+  const handleEdit = (program: Program) => setEditingProgram(program);
+
+  //? Crear programa
+  const onSaveProgram = async (program: CreateProgram) => {
+    try {
+      await mutateAsyncCreate(program);
+      setOpenModal(false);
+    } catch (error: any) {
+      const errorMsg = parseAxiosError(error);
+      toast.error(errorMsg);
+    }
   };
 
-  const handleDelete = (id: string) => {
-    //setPrograms(programs.filter((p) => p.id !== id));
-    setDeletingProgramId(null);
+  //? Actualizar programa
+  const onUpdatedProgram = async (program: Program) => {
+    try {
+      const { id, ...rest } = program;
+      if (editingProgram) {
+        await mutateAsynUpdated({ userId: program.id, data: rest });
+        setEditingProgram(null);
+      }
+    } catch (error: any) {
+      const errorMsg = parseAxiosError(error);
+      toast.error(errorMsg);
+    }
   };
 
-  const handleView = (program: Program) => {
-    setViewingProgram(program);
+  //? Eliminar programa
+  const handleDelete = async (id: string) => {
+    try {
+      await mutateAsyncDelete(id);
+    } catch (error: any) {
+      const errorMsg = parseAxiosError(error);
+      toast.error(errorMsg);
+    }
   };
-
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-4">
@@ -71,12 +99,12 @@ export function ProgramsTable() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Buscar programas..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchQuery}
+            onChange={(e) => handleSearch(e.target.value)}
             className="pl-10"
           />
         </div>
-        <Button>
+        <Button onClick={() => setOpenModal(true)}>
           <Plus className="mr-2 h-4 w-4" />
           Agregar Programa
         </Button>
@@ -90,7 +118,7 @@ export function ProgramsTable() {
               <TableHead>Nombre</TableHead>
               <TableHead>Descripción</TableHead>
               <TableHead>Fecha de Inicio</TableHead>
-              <TableHead>Estado</TableHead>
+              <TableHead>Nivel</TableHead>
               <TableHead className="text-right">Acciones</TableHead>
             </TableRow>
           </TableHeader>
@@ -118,7 +146,13 @@ export function ProgramsTable() {
                     })}
                   </TableCell>
                   <TableCell>
-                    <Badge className="bg-blue-700">{program.status}</Badge>
+                    <Badge
+                      className={`text-white ${
+                        getStatusProps(program.difficulty).bgColor
+                      }`}
+                    >
+                      {getStatusProps(program.difficulty).label}
+                    </Badge>
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex items-center justify-end gap-2">
@@ -152,10 +186,22 @@ export function ProgramsTable() {
         </Table>
       </div>
 
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
+
+      <CreateProgramDialog
+        openModal={openModal}
+        onClose={() => setOpenModal(false)}
+        onSave={onSaveProgram}
+      />
+
       <EditProgramDialog
         program={editingProgram}
         onClose={() => setEditingProgram(null)}
-        onSave={handleSaveEdit}
+        onSave={onUpdatedProgram}
       />
 
       <ViewProgramDialog

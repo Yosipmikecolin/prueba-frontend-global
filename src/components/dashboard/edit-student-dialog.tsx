@@ -21,7 +21,7 @@ type EditStudentDialogProps = {
   student: User | null;
   programs: Program[];
   onClose: () => void;
-  onSave: (user:User) => void;
+  onSave: (user: User) => void;
 };
 
 const formSchema = z.object({

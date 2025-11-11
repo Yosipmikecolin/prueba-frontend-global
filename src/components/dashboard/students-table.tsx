@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import toast from "react-hot-toast";
 import {
   Table,
   TableBody,
@@ -24,7 +25,6 @@ import {
   useUpdatedStudent,
 } from "@/services/mutation";
 import { CreatetStudentDialog } from "./create-student-dialog";
-import toast from "react-hot-toast";
 import { parseAxiosError } from "@/utils";
 
 export function StudentsTable() {
@@ -34,9 +34,9 @@ export function StudentsTable() {
   const [viewingStudent, setViewingStudent] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const { data: programs } = useGetPrograms(1, 10);
-  const { mutateAsync } = useUpdatedStudent();
-  const { mutateAsync: mutateAsyncDelete } = useDeleteStudent();
   const { mutateAsync: mutateAsyncCreate } = useCreateStudent();
+  const { mutateAsync: mutateAsynUpdated } = useUpdatedStudent();
+  const { mutateAsync: mutateAsyncDelete } = useDeleteStudent();
   const [deletingStudentId, setDeletingStudentId] = useState<string | null>(
     null
   );
@@ -62,10 +62,11 @@ export function StudentsTable() {
   const handleView = (student: any) => setViewingStudent(student);
   const handleEdit = (student: any) => setEditingStudent(student);
 
-  //? Eliminar estudiante
-  const handleDelete = async (id: string) => {
+  //? Crear estudiante
+  const onSaveStudent = async (student: CreateStuden) => {
     try {
-      await mutateAsyncDelete(id);
+      await mutateAsyncCreate(student);
+      setOpenModal(false);
     } catch (error: any) {
       const errorMsg = parseAxiosError(error);
       toast.error(errorMsg);
@@ -81,7 +82,7 @@ export function StudentsTable() {
           userId: editingStudent.id,
           data: { fullName, email, programIds: programs.map((i) => i.id) },
         };
-        await mutateAsync(user);
+        await mutateAsynUpdated(user);
         setEditingStudent(null);
       }
     } catch (error: any) {
@@ -90,11 +91,10 @@ export function StudentsTable() {
     }
   };
 
-  //? Crear estudiante
-  const onSaveStudent = async (student: CreateStuden) => {
+  //? Eliminar estudiante
+  const handleDelete = async (id: string) => {
     try {
-      await mutateAsyncCreate(student);
-      setOpenModal(false);
+      await mutateAsyncDelete(id);
     } catch (error: any) {
       const errorMsg = parseAxiosError(error);
       toast.error(errorMsg);
@@ -178,6 +178,7 @@ export function StudentsTable() {
                         <Pencil className="h-4 w-4" />
                       </Button>
                       <Button
+                        disabled={student.email === "yosip@example.com"}
                         variant="ghost"
                         size="icon"
                         onClick={() => setDeletingStudentId(student.id)}

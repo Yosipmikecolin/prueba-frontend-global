@@ -63,9 +63,13 @@ export function CreateProgramDialog({
     },
   });
 
-  const onSubmit = (data: FormValues) => {
+  const cleanInputs = () => {
     clearErrors();
     reset();
+  };
+
+  const onSubmit = (data: FormValues) => {
+    cleanInputs();
     onSave(data);
   };
 
@@ -73,8 +77,7 @@ export function CreateProgramDialog({
     <Dialog
       open={openModal}
       onOpenChange={() => {
-        reset();
-        clearErrors();
+        cleanInputs();
         onClose();
       }}
     >
@@ -135,7 +138,14 @@ export function CreateProgramDialog({
           </div>
 
           <DialogFooter>
-            <Button variant="outline" type="button" onClick={onClose}>
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => {
+                cleanInputs();
+                onClose();
+              }}
+            >
               Cancelar
             </Button>
             <Button type="submit">Guardar Cambios</Button>

@@ -45,6 +45,7 @@ export function CreatetStudentDialog({
     register,
     control,
     handleSubmit,
+    clearErrors,
     reset,
     formState: { errors },
   } = useForm<FormValues>({
@@ -56,7 +57,13 @@ export function CreatetStudentDialog({
     },
   });
 
+  const cleanInputs = () => {
+    clearErrors();
+    reset();
+  };
+
   const onSubmit = (data: FormValues) => {
+    cleanInputs();
     onSave(data);
   };
 
@@ -64,8 +71,8 @@ export function CreatetStudentDialog({
     <Dialog
       open={openModal}
       onOpenChange={() => {
+        cleanInputs();
         onClose();
-        reset();
       }}
     >
       <DialogContent className="sm:max-w-[525px]">
@@ -150,7 +157,14 @@ export function CreatetStudentDialog({
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={onClose}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                cleanInputs();
+                onClose();
+              }}
+            >
               Cancelar
             </Button>
             <Button type="submit">Guardar Cambios</Button>
