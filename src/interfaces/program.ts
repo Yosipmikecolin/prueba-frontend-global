@@ -9,7 +9,7 @@ interface Program {
   description: string;
   startDate: string;
   status: string;
-  difficulty: string;
+  difficulty: "easy" | "mid" | "high";
 }
 
 interface Meta {
@@ -22,7 +22,7 @@ interface CreateProgram {
   name: string;
   description: string;
   startDate: string;
-  status: "easy" | "mid" | "high";
+  difficulty: "easy" | "mid" | "high";
 }
 
 interface CreateStuden {
