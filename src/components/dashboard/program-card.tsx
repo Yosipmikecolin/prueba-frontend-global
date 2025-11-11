@@ -53,7 +53,7 @@ export function ProgramCard({ program }: CourseCardProps) {
 
       <CardFooter className="flex gap-2">
         <Button
-          disabled={user?.programs.some((i) => i.id === program.id)}
+          disabled={isPending || user?.programs.some((i) => i.id === program.id)}
           className="flex-1"
           onClick={() => addProgram(program.id)}
         >

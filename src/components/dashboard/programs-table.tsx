@@ -34,8 +34,10 @@ export function ProgramsTable() {
   const [viewingProgram, setViewingProgram] = useState<Program | null>(null);
   const [openModal, setOpenModal] = useState(false);
   const { data } = useGetPrograms(currentPage, 10);
-  const { mutateAsync: mutateAsyncCreate } = useCreateProgram();
-  const { mutateAsync: mutateAsynUpdated } = useUpdatedProgram();
+  const { mutateAsync: mutateAsyncCreate, isPending: isPendingCreate } =
+    useCreateProgram();
+  const { mutateAsync: mutateAsynUpdated, isPending: isPendingUpdated } =
+    useUpdatedProgram();
   const { mutateAsync: mutateAsyncDelete } = useDeleteProgram();
   const [deletingProgramId, setDeletingProgramId] = useState<string | null>(
     null
@@ -193,12 +195,14 @@ export function ProgramsTable() {
       />
 
       <CreateProgramDialog
+        isPending={isPendingCreate}
         openModal={openModal}
         onClose={() => setOpenModal(false)}
         onSave={onSaveProgram}
       />
 
       <EditProgramDialog
+        isPending={isPendingUpdated}
         program={editingProgram}
         onClose={() => setEditingProgram(null)}
         onSave={onUpdatedProgram}

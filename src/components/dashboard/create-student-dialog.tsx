@@ -15,8 +15,10 @@ import { Label } from "@/components/ui/label";
 import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 
 type CreateStudentDialogProps = {
+  isPending: boolean;
   programs: Program[];
   openModal: boolean;
   onClose: () => void;
@@ -36,6 +38,7 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 export function CreatetStudentDialog({
+  isPending,
   programs = [],
   openModal,
   onClose,
@@ -163,6 +166,7 @@ export function CreatetStudentDialog({
 
           <DialogFooter>
             <Button
+              disabled={isPending}
               type="button"
               variant="outline"
               onClick={() => {
@@ -172,7 +176,16 @@ export function CreatetStudentDialog({
             >
               Cancelar
             </Button>
-            <Button type="submit">Guardar Cambios</Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? (
+                <div className="flex items-center gap-3">
+                  <span>Actualizando</span>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                </div>
+              ) : (
+                "Guardar Cambios"
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

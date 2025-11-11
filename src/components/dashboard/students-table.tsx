@@ -34,8 +34,10 @@ export function StudentsTable() {
   const [viewingStudent, setViewingStudent] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const { data: programs } = useGetPrograms(1, 10);
-  const { mutateAsync: mutateAsyncCreate } = useCreateStudent();
-  const { mutateAsync: mutateAsynUpdated } = useUpdatedStudent();
+  const { mutateAsync: mutateAsyncCreate, isPending: isPendingCreate } =
+    useCreateStudent();
+  const { mutateAsync: mutateAsynUpdated, isPending: isPendingUpdated } =
+    useUpdatedStudent();
   const { mutateAsync: mutateAsyncDelete } = useDeleteStudent();
   const [deletingStudentId, setDeletingStudentId] = useState<string | null>(
     null
@@ -86,7 +88,6 @@ export function StudentsTable() {
         setEditingStudent(null);
       }
     } catch (error: any) {
-      alert("s")
       const errorMsg = parseAxiosError(error);
       toast.error(errorMsg);
     }
@@ -202,6 +203,7 @@ export function StudentsTable() {
       />
 
       <CreatetStudentDialog
+        isPending={isPendingCreate}
         openModal={openModal}
         programs={programs?.data || []}
         onClose={() => setOpenModal(false)}
@@ -209,6 +211,7 @@ export function StudentsTable() {
       />
 
       <EditStudentDialog
+        isPending={isPendingUpdated}
         programs={programs?.data || []}
         student={editingStudent}
         onClose={() => setEditingStudent(null)}

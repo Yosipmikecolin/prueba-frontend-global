@@ -25,8 +25,10 @@ import {
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
 type EditProgramDialogProps = {
+  isPending: boolean;
   program: Program | null;
   onClose: () => void;
   onSave: (program: Program) => void;
@@ -42,6 +44,7 @@ const formSchema = z.object({
 type ProgramSchema = z.infer<typeof formSchema>;
 
 export function EditProgramDialog({
+  isPending,
   program,
   onClose,
   onSave,
@@ -150,10 +153,24 @@ export function EditProgramDialog({
           </div>
 
           <DialogFooter>
-            <Button variant="outline" type="button" onClick={onClose}>
+            <Button
+              disabled={isPending}
+              variant="outline"
+              type="button"
+              onClick={onClose}
+            >
               Cancelar
             </Button>
-            <Button type="submit">Guardar Cambios</Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? (
+                <div className="flex items-center gap-3">
+                  <span>Actualizando</span>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                </div>
+              ) : (
+                "Guardar Cambios"
+              )}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
